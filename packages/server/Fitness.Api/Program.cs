@@ -1,8 +1,23 @@
+using Fitness.Application.Interfaces.Repositories;
+using Fitness.Infrastructure.Data;
+using Fitness.Infrastructure.Middlewares;
+using Fitness.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 builder.Services.AddOpenApi();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IWorkoutTemplateRepository, WorkoutTemplateRepository>();
+builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+builder.Services.AddScoped<IWorkoutSessionRepository, WorkoutSessionRepository>();
+builder.Services.AddScoped<IExerciseLogRepository, ExerciseLogRepository>();
+builder.Services.AddScoped<ISetLogRepository, SetLogRepository>();
 
 var app = builder.Build();
 

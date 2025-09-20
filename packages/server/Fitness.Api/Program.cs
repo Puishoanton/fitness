@@ -22,6 +22,7 @@ builder.Services.AddScoped<ISetLogRepository, SetLogRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ErrorHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

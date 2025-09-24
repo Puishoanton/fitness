@@ -7,5 +7,6 @@ namespace Fitness.Application.Interfaces.Services
     {
         Task<AuthResponseDto> GoogleLoginAsync(string googleTokenId, HttpResponse response);
         Task<AuthMessageResponseDto> LogoutAsync(string refrshToken, HttpResponse response);
+        Task<AuthResponseDto> RefreshTokenAsync(string refrshToken, HttpResponse response);
     }
 }

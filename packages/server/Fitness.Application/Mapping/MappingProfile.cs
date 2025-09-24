@@ -14,7 +14,7 @@ namespace Fitness.Application.Mapping
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
 
             CreateMap<User, UserPayloadDto>();
-            CreateMap<AuthResponseDto, User>();
+            CreateMap<User, AuthResponseDto>();
         }
     }
 }

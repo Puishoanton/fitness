@@ -68,5 +68,34 @@ namespace Fitness.Application.Services
 
             return new AuthMessageResponseDto() { Message = "Logout success" };
         }
+
+        public async Task<AuthResponseDto> RefreshTokenAsync(string? refreshToken, HttpResponse response)
+        {
+            try
+            {
+                _tokenService.GetPrincipalFromToken(refreshToken);
+            }
+            catch
+            {
+                throw new BadRequestException("Invalid refresh token.");
+            }
+            User? user = await _userRepository.GetUserByRefreshTokenAsync(refreshToken);
+            if (user is null || user.RefreshToken != refreshToken)
+            {
+                if (user is not null)
+                {
+                    user.RefreshToken = string.Empty;
+                    await _userRepository.UpdateAsync(user);
+                }
+
+                throw new BadRequestException("Invalid refresh token.");
+            }
+            UserPayloadDto userPayloadDto = _mapper.Map<UserPayloadDto>(user);
+
+            user.RefreshToken = _tokenService.GenerateTokensAndSetToCookies(userPayloadDto, response);
+            await _userRepository.UpdateAsync(user);
+
+            return _mapper.Map<AuthResponseDto>(user);
+        }
     }
 }

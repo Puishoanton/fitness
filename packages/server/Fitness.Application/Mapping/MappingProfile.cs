@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Fitness.Application.DTOs.Auth;
+using Fitness.Application.DTOs.Exercise;
 using Fitness.Application.DTOs.User;
+using Fitness.Application.DTOs.WorkoutTemplate;
 using Fitness.Domain.Entities;
 
 namespace Fitness.Application.Mapping
@@ -15,6 +17,13 @@ namespace Fitness.Application.Mapping
 
             CreateMap<User, UserPayloadDto>();
             CreateMap<User, AuthResponseDto>();
+
+            CreateMap<CreateWorkoutTemplateDto, WorkoutTemplate>();
+            CreateMap<UpdateWorkoutTemplateDto, WorkoutTemplate>();
+            CreateMap<WorkoutTemplate, WorkoutTemplateResponseDto>();
+            CreateMap<WorkoutTemplate, WorkoutTemplateWithExercisesDto>();
+
+            CreateMap<Exercise, ExerciseInWorkoutTemplateDto>();
         }
     }
 }

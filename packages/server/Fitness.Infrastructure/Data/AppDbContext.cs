@@ -57,6 +57,14 @@ namespace Fitness.Infrastructure.Data
                 .WithMany(el => el.SetLogs)
                 .HasForeignKey(sl => sl.ExerciseLogId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkoutSession>()
+                .Property(e => e.Status)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Exercise>()
+                .Property(e => e.MuscleGroup)
+                .HasConversion<string>();
         }
     }
 }

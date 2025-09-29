@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Fitness.Domain.Enums;
 
 namespace Fitness.Domain.Entities
 {
@@ -11,7 +12,7 @@ namespace Fitness.Domain.Entities
         [Required]
         public string Description { get; set; } = string.Empty;
         [Required]
-        public string MuscleGroup { get; set; } = string.Empty;
+        public MuscleGroup MuscleGroup { get; set; }
         public ICollection<ExerciseLog> ExerciseLogs { get; set; } = [];
         public ICollection<WorkoutTemplate> WorkoutTemplates { get; set; } = [];
     }

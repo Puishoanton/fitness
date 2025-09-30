@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.WorkoutTemplate;
-using Fitness.Application.Exceptions.WorkoutTemplate;
+using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
@@ -27,7 +28,7 @@ namespace Fitness.Application.Services
             WorkoutTemplate? updatedWorkoutTemplate = await _workoutTemplateRepository.GetByIdAsync(workoutTemplateId);
             if (updatedWorkoutTemplate is null)
             {
-                throw new WorkoutTemplateNotFoundException(workoutTemplateId);
+                throw new NotFoundException(workoutTemplateId, nameof(WorkoutTemplate));
             }
 
             _mapper.Map(updateWorkoutTemplateDto, updatedWorkoutTemplate);
@@ -36,17 +37,17 @@ namespace Fitness.Application.Services
             return _mapper.Map<WorkoutTemplateResponseDto>(updatedWorkoutTemplate);
         }
 
-        public async Task<WorkoutTemplateResponseMessageDto> DeleteWorkoutTemplateAsync(Guid workoutTemplateId)
+        public async Task<DeleteResponseMessageDto> DeleteWorkoutTemplateAsync(Guid workoutTemplateId)
         {
             bool IsDeleted = await _workoutTemplateRepository.DeleteAsync(workoutTemplateId);
 
             if (!IsDeleted)
             {
-                throw new WorkoutTemplateNotFoundException(workoutTemplateId);
+                throw new NotFoundException(workoutTemplateId, nameof(WorkoutTemplate));
             }
 
 
-            return new WorkoutTemplateResponseMessageDto() { Message = $"WorkoutTemplateId: {workoutTemplateId} is deleted." };
+            return new DeleteResponseMessageDto(workoutTemplateId, nameof(WorkoutTemplate));
         }
 
         public async Task<WorkoutTemplateWithExercisesDto?> GetWorkoutTemplateByIdWithExercisesAsync(Guid workoutTemplateId)
@@ -54,7 +55,7 @@ namespace Fitness.Application.Services
             WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetWorkoutTemplateByIdWithExercises(workoutTemplateId);
             if (workoutTemplate is null)
             {
-                throw new WorkoutTemplateNotFoundException(workoutTemplateId);
+                throw new NotFoundException(workoutTemplateId, nameof(WorkoutTemplate));
             }
 
             return _mapper.Map<WorkoutTemplateWithExercisesDto>(workoutTemplate);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.WorkoutTemplate;
-using Fitness.Application.Exceptions.WorkoutTemplate;
+using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Services;
 using Fitness.Domain.Entities;
@@ -127,8 +128,8 @@ namespace Fitness.Tests.Services
             Func<Task> act = async () => await workoutTemplateService.UpdateWorkoutTemplateAsync(updateWorkoutTemplateDto, workoutTemplateId);
 
             //Assert
-            await act.Should().ThrowAsync<WorkoutTemplateNotFoundException>()
-                .WithMessage($"WorkoutTemplateId: {workoutTemplateId} is not found.");
+            await act.Should().ThrowAsync<NotFoundException>()
+                .WithMessage($"{nameof(WorkoutTemplate)}: {workoutTemplateId} is not found.");
 
             workoutTemplateRepositoryMock.Verify(r => r.GetByIdAsync(workoutTemplateId), Times.Once);
             mapperMock.Verify(m => m.Map<WorkoutTemplate>(It.IsAny<UpdateWorkoutTemplateDto>()), Times.Never);
@@ -155,11 +156,11 @@ namespace Fitness.Tests.Services
                 );
 
             //Act
-            WorkoutTemplateResponseMessageDto result = await workoutTemplateService.DeleteWorkoutTemplateAsync(workoutTemplateId);
+            DeleteResponseMessageDto result = await workoutTemplateService.DeleteWorkoutTemplateAsync(workoutTemplateId);
 
             //Assert
             result.Should().NotBeNull();
-            result.Message.Should().Be($"WorkoutTemplateId: {workoutTemplateId} is deleted.");
+            result.Message.Should().Be($"{nameof(WorkoutTemplate)} with id {workoutTemplateId} has been deleted successfully.");
 
             workoutTemplateRepositoryMock.Verify(r => r.DeleteAsync(workoutTemplateId), Times.Once);
         }
@@ -186,8 +187,8 @@ namespace Fitness.Tests.Services
             Func<Task> act = async () => await workoutTemplateService.DeleteWorkoutTemplateAsync(workoutTemplateId);
 
             //Assert
-            await act.Should().ThrowAsync<WorkoutTemplateNotFoundException>()
-                .WithMessage($"WorkoutTemplateId: {workoutTemplateId} is not found.");
+            await act.Should().ThrowAsync<NotFoundException>()
+                .WithMessage($"{nameof(WorkoutTemplate)}: {workoutTemplateId} is not found.");
 
             workoutTemplateRepositoryMock.Verify(r => r.DeleteAsync(workoutTemplateId), Times.Once);
         }
@@ -281,8 +282,8 @@ namespace Fitness.Tests.Services
             Func<Task> act = async () => await workoutTemplateService.GetWorkoutTemplateByIdWithExercisesAsync(workoutTemplateId);
 
             //Assert
-            await act.Should().ThrowAsync<WorkoutTemplateNotFoundException>()
-                .WithMessage($"WorkoutTemplateId: {workoutTemplateId} is not found.");
+            await act.Should().ThrowAsync<NotFoundException>()
+                .WithMessage($"{nameof(WorkoutTemplate)}: {workoutTemplateId} is not found.");
 
             workoutTemplateRepositoryMock.Verify(r => r.GetWorkoutTemplateByIdWithExercises(workoutTemplateId), Times.Once);
             mapperMock.Verify(m => m.Map<WorkoutTemplateWithExercisesDto>(It.IsAny<WorkoutTemplate>()), Times.Never);

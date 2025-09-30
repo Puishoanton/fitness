@@ -18,12 +18,21 @@ namespace Fitness.Application.Mapping
             CreateMap<User, UserPayloadDto>();
             CreateMap<User, AuthResponseDto>();
 
-            CreateMap<CreateWorkoutTemplateDto, WorkoutTemplate>();
-            CreateMap<UpdateWorkoutTemplateDto, WorkoutTemplate>();
+            CreateMap<CreateWorkoutTemplateDto, WorkoutTemplate>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+            CreateMap<UpdateWorkoutTemplateDto, WorkoutTemplate>()
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
             CreateMap<WorkoutTemplate, WorkoutTemplateResponseDto>();
             CreateMap<WorkoutTemplate, WorkoutTemplateWithExercisesDto>();
 
-            CreateMap<Exercise, ExerciseInWorkoutTemplateDto>();
+            CreateMap<CreateExerciseDto, Exercise>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+            CreateMap<UpdateExerciseDto, Exercise>()
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+            CreateMap<Exercise, ExerciseResponseDto>();
+            CreateMap<Exercise, ExerciseLightDto>();
         }
     }
 }

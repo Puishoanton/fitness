@@ -12,6 +12,12 @@ namespace Fitness.Infrastructure.Repositories
         {
             return await _context.Set<T>().ToListAsync();
         }
+
+        public async Task<List<T>> GetAllListAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+
         public async Task<T?> GetByIdAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);

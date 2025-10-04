@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Fitness.Application.DTOs.Auth;
 using Fitness.Application.DTOs.Exercise;
+using Fitness.Application.DTOs.ExerciseLog;
 using Fitness.Application.DTOs.User;
+using Fitness.Application.DTOs.WorkoutSession;
 using Fitness.Application.DTOs.WorkoutTemplate;
 using Fitness.Domain.Entities;
 
@@ -33,6 +35,13 @@ namespace Fitness.Application.Mapping
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
             CreateMap<Exercise, ExerciseResponseDto>();
             CreateMap<Exercise, ExerciseLightDto>();
+
+            CreateMap<UpdateWorkoutSessionDto, WorkoutSession>()
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+            CreateMap<WorkoutSession, WorkoutSessionResponseDto>();
+            CreateMap<WorkoutSession, WorkoutSessionLightDto>();
+
+            CreateMap<ExerciseLogLightDto, ExerciseLog>();
         }
     }
 }

@@ -291,7 +291,7 @@ namespace Fitness.Tests.Services
                 );
 
             //Act
-            Func<Task> act = async () => await authService.RefreshTokenAsync(refreshToken, response);
+            Func<Task> act = async () => await authService.RefreshTokensAsync(refreshToken, response);
 
             //Assert
             await act.Should().ThrowAsync<BadRequestException>()
@@ -335,7 +335,7 @@ namespace Fitness.Tests.Services
                 );
 
             //Act
-            Func<Task> act = async () => await authService.RefreshTokenAsync(refreshToken, response);
+            Func<Task> act = async () => await authService.RefreshTokensAsync(refreshToken, response);
 
             //Assert
             await act.Should().ThrowAsync<BadRequestException>()
@@ -380,7 +380,7 @@ namespace Fitness.Tests.Services
                 );
 
             //Act
-            Func<Task> act = async () => await authService.RefreshTokenAsync(requestRefreshToken, response);
+            Func<Task> act = async () => await authService.RefreshTokensAsync(requestRefreshToken, response);
 
             //Assert
             await act.Should().ThrowAsync<BadRequestException>()
@@ -449,7 +449,7 @@ namespace Fitness.Tests.Services
                 );
 
             //Act
-            AuthResponseDto result = await authService.RefreshTokenAsync(refreshToken, response);
+            AuthResponseDto result = await authService.RefreshTokensAsync(refreshToken, response);
 
             //Assert
             result.Should().NotBeNull();

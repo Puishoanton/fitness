@@ -1,7 +1,5 @@
 ﻿using Fitness.Application.DTOs.Common;
-using Fitness.Application.DTOs.ExerciseLog;
 using Fitness.Application.DTOs.SetLog;
-using Fitness.Application.DTOs.WorkoutSession;
 
 namespace Fitness.Application.Interfaces.Services
 {

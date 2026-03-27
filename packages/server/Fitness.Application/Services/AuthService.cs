@@ -18,6 +18,7 @@ namespace Fitness.Application.Services
         private readonly ITokenService _tokenService = tokenService;
         private readonly IGoogleTokenValidator _googleTokenValidator = googleTokenValidator;
         private readonly IMapper _mapper = mapper;
+
         public async Task<AuthResponseDto> GoogleLoginAsync(string googleTokenId, HttpResponse response)
         {
             GoogleJsonWebSignature.Payload payload;
@@ -28,6 +29,14 @@ namespace Fitness.Application.Services
             catch (InvalidJwtException)
             {
                 throw new BadRequestException("Invalid Google ID token.");
+            }
+            catch (Newtonsoft.Json.JsonReaderException)
+            {
+                throw new BadRequestException("Invalid Google ID token format.");
+            }
+            catch (Exception)
+            {
+                throw new BadRequestException("Failed to validate Google ID token.");
             }
 
             User? user = await _userRepository.GetUserByEmailAsync(payload.Email);
@@ -69,7 +78,7 @@ namespace Fitness.Application.Services
             return new AuthMessageResponseDto() { Message = "Logout success" };
         }
 
-        public async Task<AuthResponseDto> RefreshTokenAsync(string? refreshToken, HttpResponse response)
+        public async Task<AuthResponseDto> RefreshTokensAsync(string? refreshToken, HttpResponse response)
         {
             try
             {

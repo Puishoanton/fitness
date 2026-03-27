@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Infrastructure.Data;
 using Fitness.Infrastructure.Middlewares;
@@ -25,6 +26,7 @@ builder.Services.AddCors(options =>
         .AllowCredentials();
     });
 });
+builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
     {
         string? tokenSecretKey = builder.Configuration["Jwt:AccessTokenSecretKey"];
@@ -79,6 +81,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
+app.MapControllers();
 
 var summaries = new[]
 {

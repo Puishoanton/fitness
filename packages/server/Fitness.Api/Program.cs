@@ -1,12 +1,19 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Fitness.Api.Swagger;
 using Fitness.Application.Interfaces.Repositories;
+using Fitness.Application.Interfaces.Services;
+using Fitness.Application.Interfaces.Validators;
+using Fitness.Application.Mapping;
+using Fitness.Application.Services;
+using Fitness.Application.Validators;
 using Fitness.Infrastructure.Data;
 using Fitness.Infrastructure.Middlewares;
 using Fitness.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +33,23 @@ builder.Services.AddCors(options =>
         .AllowCredentials();
     });
 });
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(
+    c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Fitness API",
+            Version = "v1"
+        });
+
+        c.OperationFilter<AuthorizeCheckOperationFilter>();
+    });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
     {
         string? tokenSecretKey = builder.Configuration["Jwt:AccessTokenSecretKey"];
@@ -61,13 +84,28 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 builder.Services.AddOpenApi();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+
 builder.Services.AddScoped<IWorkoutTemplateRepository, WorkoutTemplateRepository>();
+builder.Services.AddScoped<IWorkoutTemplateService, WorkoutTemplateService>();
+
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
+
 builder.Services.AddScoped<IWorkoutSessionRepository, WorkoutSessionRepository>();
+builder.Services.AddScoped<IWorkoutSessionService, WorkoutSessionService>();
+
 builder.Services.AddScoped<IExerciseLogRepository, ExerciseLogRepository>();
+builder.Services.AddScoped<IExerciseLogService, ExerciseLogService>();
+
 builder.Services.AddScoped<ISetLogRepository, SetLogRepository>();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<ISetLogService, SetLogService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
 
@@ -75,6 +113,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 app.UseCors("AllowedOrigins");
 app.UseAuthentication();
@@ -83,28 +123,4 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

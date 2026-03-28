@@ -31,6 +31,7 @@ namespace Fitness.Application.Services
             }
 
             _mapper.Map(updateExerciseDto, updatedExercise);
+            updatedExercise.UpdatedAt = DateTimeOffset.UtcNow;
             await _exerciseRepository.UpdateAsync(updatedExercise);
 
             return _mapper.Map<ExerciseResponseDto>(updatedExercise);

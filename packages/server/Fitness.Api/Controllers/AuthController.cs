@@ -2,7 +2,7 @@
 using Fitness.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Fitness.Application.Exceptions;
+
 
 namespace Fitness.Api.Controllers
 {
@@ -11,6 +11,7 @@ namespace Fitness.Api.Controllers
     public class AuthController(IAuthService authService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
+
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] string googleTokenId)
         {

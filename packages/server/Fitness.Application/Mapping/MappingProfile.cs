@@ -33,7 +33,8 @@ namespace Fitness.Application.Mapping
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
             CreateMap<UpdateExerciseDto, Exercise>()
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<Exercise, ExerciseResponseDto>();
             CreateMap<Exercise, ExerciseLightDto>();
 

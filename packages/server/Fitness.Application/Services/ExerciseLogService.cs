@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.ExerciseLog;
 using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
@@ -62,6 +63,18 @@ namespace Fitness.Application.Services
         {
             List<ExerciseLog> exerciseLogs = await _exerciseLogRepository.GetAllListAsync();
             return _mapper.Map<List<ExerciseLogLightDto>>(exerciseLogs);
+        }
+        public async Task<DeleteResponseMessageDto> DeleteExerciseLogAsync(Guid exerciseLogId)
+        {
+            bool IsDeleted = await _exerciseLogRepository.DeleteAsync(exerciseLogId);
+
+            if (!IsDeleted)
+            {
+                throw new NotFoundException(exerciseLogId, nameof(ExerciseLog));
+            }
+
+
+            return new DeleteResponseMessageDto(exerciseLogId, nameof(ExerciseLog));
         }
     }
 }

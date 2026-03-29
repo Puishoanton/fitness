@@ -1,4 +1,5 @@
-﻿using Fitness.Application.DTOs.ExerciseLog;
+﻿using Fitness.Application.DTOs.Common;
+using Fitness.Application.DTOs.ExerciseLog;
 
 namespace Fitness.Application.Interfaces.Services
 {
@@ -8,5 +9,7 @@ namespace Fitness.Application.Interfaces.Services
         Task<ExerciseLogLightDto> UpdateExerciseLogAsync(Guid exerciseLogId, UpdateExerciseLogDto updateExerciseLogDto);
         Task<ExerciseLogLightDto> GetExerciseLogByIdAsync(Guid exerciseLogId);
         Task<List<ExerciseLogLightDto>> GetAllExerciseLogsAsync();
+        Task<DeleteResponseMessageDto> DeleteExerciseLogAsync(Guid exerciseLogId);
+
     }
 }

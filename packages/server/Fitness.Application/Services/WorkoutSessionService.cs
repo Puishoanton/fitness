@@ -14,7 +14,6 @@ namespace Fitness.Application.Services
         private readonly IWorkoutTemplateRepository _workoutTemplateRepository = workoutTemplateRepository;
         private readonly IMapper _mapper = mapper;
 
-
         public async Task<WorkoutSessionResponseDto> CreateWorkoutSessionAsync(Guid userId, Guid workoutTemplateId)
         {
             WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetByIdAsync(workoutTemplateId);

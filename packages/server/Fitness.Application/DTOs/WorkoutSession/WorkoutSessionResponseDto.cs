@@ -10,7 +10,7 @@ namespace Fitness.Application.DTOs.WorkoutSession
         public int AverageRestTime { get; set; } = 0;
         public Status Status { get; set; }
         public List<ExerciseLogLightDto> ExerciseLogs { get; set; } = [];
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
     }
 }

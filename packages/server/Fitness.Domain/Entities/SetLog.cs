@@ -10,7 +10,7 @@ namespace Fitness.Domain.Entities
         public ExerciseLog? ExerciseLog { get; set; }
         public int Order { get; set; }
         public int Reps { get; set; }
-        public int Weight { get; set; }
-        public int RestTime { get; set; }
+        public decimal Weight { get; set; }
+        public int RestTimeSeconds { get; set; }
     }
 }

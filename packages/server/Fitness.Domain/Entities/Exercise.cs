@@ -14,6 +14,6 @@ namespace Fitness.Domain.Entities
         [Required]
         public MuscleGroup MuscleGroup { get; set; }
         public ICollection<ExerciseLog> ExerciseLogs { get; set; } = [];
-        public ICollection<WorkoutTemplate> WorkoutTemplates { get; set; } = [];
+        public ICollection<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; } = [];
     }
 }

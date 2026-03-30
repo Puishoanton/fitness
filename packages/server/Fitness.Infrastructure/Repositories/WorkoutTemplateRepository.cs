@@ -12,8 +12,8 @@ namespace Fitness.Infrastructure.Repositories
         public async Task<WorkoutTemplate?> GetWorkoutTemplateByIdWithExercises(Guid workoutTemplateId)
         {
             return await _context.WorkoutTemplates
-                .Include(wt => wt.Exercises)
-                .FirstOrDefaultAsync(wt=> wt.Id == workoutTemplateId);
+                .Include(wt => wt.WorkoutTemplateExercises)
+                .FirstOrDefaultAsync(wt => wt.Id == workoutTemplateId);
         }
     }
 }

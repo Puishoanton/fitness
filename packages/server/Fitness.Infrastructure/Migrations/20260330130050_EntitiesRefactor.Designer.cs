@@ -3,6 +3,7 @@ using System;
 using Fitness.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Fitness.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330130050_EntitiesRefactor")]
+    partial class EntitiesRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,13 +315,13 @@ namespace Fitness.Infrastructure.Migrations
             modelBuilder.Entity("Fitness.Domain.Entities.WorkoutTemplateExercise", b =>
                 {
                     b.HasOne("Fitness.Domain.Entities.Exercise", "Exercise")
-                        .WithMany("WorkoutTemplateExercises")
+                        .WithMany()
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Fitness.Domain.Entities.WorkoutTemplate", "WorkoutTemplate")
-                        .WithMany("WorkoutTemplateExercises")
+                        .WithMany("Exercises")
                         .HasForeignKey("WorkoutTemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -331,8 +334,6 @@ namespace Fitness.Infrastructure.Migrations
             modelBuilder.Entity("Fitness.Domain.Entities.Exercise", b =>
                 {
                     b.Navigation("ExerciseLogs");
-
-                    b.Navigation("WorkoutTemplateExercises");
                 });
 
             modelBuilder.Entity("Fitness.Domain.Entities.ExerciseLog", b =>
@@ -354,9 +355,9 @@ namespace Fitness.Infrastructure.Migrations
 
             modelBuilder.Entity("Fitness.Domain.Entities.WorkoutTemplate", b =>
                 {
-                    b.Navigation("WorkoutSessions");
+                    b.Navigation("Exercises");
 
-                    b.Navigation("WorkoutTemplateExercises");
+                    b.Navigation("WorkoutSessions");
                 });
 #pragma warning restore 612, 618
         }

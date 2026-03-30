@@ -11,8 +11,6 @@ namespace Fitness.Domain.Entities
         public User? User { get; set; }
         public Guid WorkoutTemplateId { get; set; }
         public WorkoutTemplate? WorkoutTemplate { get; set; }
-        public int Duration { get; set; } = 0;
-        public int AverageRestTime { get; set; } = 0;
         [Required]
         public Status Status { get; set; }
         public ICollection<ExerciseLog> ExerciseLogs { get; set; } = [];

@@ -13,6 +13,7 @@ namespace Fitness.Infrastructure.Data
         public DbSet<SetLog> SetLogs { get; set; }
         public DbSet<WorkoutSession> WorkoutSessions { get; set; }
         public DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
+        public DbSet<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,9 +25,10 @@ namespace Fitness.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<WorkoutTemplate>()
-               .HasMany(wt => wt.Exercises)
-               .WithMany(e => e.WorkoutTemplates)
-               .UsingEntity(j => j.ToTable("WorkoutTemplateExercises"));
+                .HasMany(wt => wt.WorkoutTemplateExercises)
+                .WithOne(wte => wte.WorkoutTemplate)
+                .HasForeignKey(wte => wte.WorkoutTemplateId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<WorkoutSession>()
                 .HasOne(ws => ws.User)
@@ -50,13 +52,28 @@ namespace Fitness.Infrastructure.Data
                 .HasOne(el => el.Exercise)
                 .WithMany(e => e.ExerciseLogs)
                 .HasForeignKey(el => el.ExerciseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ExerciseLog>()
+                .HasIndex(e => new { e.WorkoutSessionId, e.Order })
+                .IsUnique();
+
+            modelBuilder.Entity<Exercise>()
+                .HasMany(e => e.WorkoutTemplateExercises)
+                .WithOne(wte => wte.Exercise)
+                .HasForeignKey(wte => wte.ExerciseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             modelBuilder.Entity<SetLog>()
                 .HasOne(sl => sl.ExerciseLog)
                 .WithMany(el => el.SetLogs)
                 .HasForeignKey(sl => sl.ExerciseLogId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SetLog>()
+                .HasIndex(e => new { e.ExerciseLogId, e.Order })
+                .IsUnique();
 
             modelBuilder.Entity<WorkoutSession>()
                 .Property(e => e.Status)
@@ -65,6 +82,12 @@ namespace Fitness.Infrastructure.Data
             modelBuilder.Entity<Exercise>()
                 .Property(e => e.MuscleGroup)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<WorkoutTemplateExercise>()
+                .HasIndex(wte => new { wte.WorkoutTemplateId, wte.Order })
+                .IsUnique();
+
+
         }
     }
 }

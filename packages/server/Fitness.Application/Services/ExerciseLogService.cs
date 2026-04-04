@@ -76,5 +76,18 @@ namespace Fitness.Application.Services
 
             return new DeleteResponseMessageDto(exerciseLogId, nameof(ExerciseLog));
         }
+        public List<ExerciseLog> CreateExerciseLogsFromWorkoutTemplateExercises(List<WorkoutTemplateExercise> workoutTemplateExercises)
+        {
+            return workoutTemplateExercises
+                .OrderBy(wte => wte.Order)
+                .Select(wte => new ExerciseLog
+                {
+                    WorkoutTemplateExerciseId = wte.Id,
+                    ExerciseId = wte.ExerciseId,
+                    SetLogs = new List<SetLog>(),
+                    Order = wte.Order
+                })
+                .ToList();
+        }
     }
 }

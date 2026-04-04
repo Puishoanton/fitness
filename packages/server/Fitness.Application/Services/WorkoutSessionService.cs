@@ -5,13 +5,15 @@ using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Enums;
 
 namespace Fitness.Application.Services
 {
-    public class WorkoutSessionService(IWorkoutSessionRepository workoutSessionRepository, IWorkoutTemplateRepository workoutTemplateRepository, IMapper mapper) : IWorkoutSessionService
+    public class WorkoutSessionService(IWorkoutSessionRepository workoutSessionRepository, IWorkoutTemplateRepository workoutTemplateRepository, IExerciseLogService exerciseLogService, IMapper mapper) : IWorkoutSessionService
     {
         private readonly IWorkoutSessionRepository _workoutSessionRepository = workoutSessionRepository;
         private readonly IWorkoutTemplateRepository _workoutTemplateRepository = workoutTemplateRepository;
+        private readonly IExerciseLogService _exerciseLogService = exerciseLogService;
         private readonly IMapper _mapper = mapper;
 
         public async Task<WorkoutSessionResponseDto> CreateWorkoutSessionAsync(Guid userId, Guid workoutTemplateId)
@@ -22,13 +24,18 @@ namespace Fitness.Application.Services
                 throw new BadRequestException($"{nameof(WorkoutTemplate)}: {workoutTemplateId} is not found.");
             }
 
+            List<ExerciseLog> exerciseLogs = _exerciseLogService.CreateExerciseLogsFromWorkoutTemplateExercises(workoutTemplate.WorkoutTemplateExercises.ToList());
+
             WorkoutSession workoutSession = new()
             {
                 UserId = userId,
                 WorkoutTemplateId = workoutTemplateId,
+                Status = Status.InProgress,
+                ExerciseLogs = exerciseLogs,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             };
+
             await _workoutSessionRepository.CreateAsync(workoutSession);
 
             return _mapper.Map<WorkoutSessionResponseDto>(workoutSession);

@@ -34,7 +34,6 @@ namespace Fitness.Application.Services
 
             return _mapper.Map<WorkoutTemplateExerciseResponseDto>(workoutTemplateExercise);
         }
-
         public async Task<DeleteResponseMessageDto> DeleteWorkoutTemplateExerciseAsync(Guid workoutTemplateExerciseId)
         {
             WorkoutTemplateExercise? workoutTemplateExercise = await _workoutTemplateExerciseRepository.GetByIdAsync(workoutTemplateExerciseId);

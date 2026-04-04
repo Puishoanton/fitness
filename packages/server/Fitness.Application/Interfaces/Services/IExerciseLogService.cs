@@ -1,15 +1,17 @@
 ﻿using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.ExerciseLog;
+using Fitness.Domain.Entities;
 
 namespace Fitness.Application.Interfaces.Services
 {
     public interface IExerciseLogService
     {
-        Task<ExerciseLogLightDto> CreateExerciseLogAsync(Guid exerciseId, Guid workoutSessionId);
-        Task<ExerciseLogLightDto> UpdateExerciseLogAsync(Guid exerciseLogId, UpdateExerciseLogDto updateExerciseLogDto);
-        Task<ExerciseLogLightDto> GetExerciseLogByIdAsync(Guid exerciseLogId);
-        Task<List<ExerciseLogLightDto>> GetAllExerciseLogsAsync();
-        Task<DeleteResponseMessageDto> DeleteExerciseLogAsync(Guid exerciseLogId);
+        public Task<ExerciseLogLightDto> CreateExerciseLogAsync(Guid exerciseId, Guid workoutSessionId);
+        public Task<ExerciseLogLightDto> UpdateExerciseLogAsync(Guid exerciseLogId, UpdateExerciseLogDto updateExerciseLogDto);
+        public Task<ExerciseLogLightDto> GetExerciseLogByIdAsync(Guid exerciseLogId);
+        public Task<List<ExerciseLogLightDto>> GetAllExerciseLogsAsync();
+        public Task<DeleteResponseMessageDto> DeleteExerciseLogAsync(Guid exerciseLogId);
+        public List<ExerciseLog> CreateExerciseLogsFromWorkoutTemplateExercises(List<WorkoutTemplateExercise> workoutTemplateExercises);
 
     }
 }

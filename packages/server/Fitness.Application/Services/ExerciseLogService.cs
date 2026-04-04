@@ -84,7 +84,7 @@ namespace Fitness.Application.Services
                 {
                     WorkoutTemplateExerciseId = wte.Id,
                     ExerciseId = wte.ExerciseId,
-                    SetLogs = new List<SetLog>(),
+                    SetLogs = [],
                     Order = wte.Order
                 })
                 .ToList();

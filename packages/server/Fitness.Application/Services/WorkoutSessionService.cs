@@ -18,7 +18,7 @@ namespace Fitness.Application.Services
 
         public async Task<WorkoutSessionResponseDto> CreateWorkoutSessionAsync(Guid userId, Guid workoutTemplateId)
         {
-            WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetByIdAsync(workoutTemplateId);
+            WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetWorkoutTemplateByIdWithExercises(workoutTemplateId);
             if (workoutTemplate is null)
             {
                 throw new BadRequestException($"{nameof(WorkoutTemplate)}: {workoutTemplateId} is not found.");
@@ -55,7 +55,7 @@ namespace Fitness.Application.Services
 
         public async Task<WorkoutSessionResponseDto> GetWorkoutSessionByIdAsync(Guid workoutSessionId)
         {
-            WorkoutSession? workoutSession = await _workoutSessionRepository.GetByIdAsync(workoutSessionId);
+            WorkoutSession? workoutSession = await _workoutSessionRepository.GetWorkoutSessionByIdWithExerciseLogs(workoutSessionId);
             if (workoutSession is null)
             {
                 throw new NotFoundException(workoutSessionId, nameof(WorkoutSession));

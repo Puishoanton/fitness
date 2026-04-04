@@ -8,10 +8,11 @@ using Fitness.Domain.Entities;
 
 namespace Fitness.Application.Services
 {
-    public class WorkoutTemplateExerciseService(IWorkoutTemplateExerciseRepository workoutTemplateExerciseRepository, IWorkoutTemplateRepository workoutTemplateRepository, IMapper mapper) : IWorkoutTemplateExerciseService
+    public class WorkoutTemplateExerciseService(IWorkoutTemplateExerciseRepository workoutTemplateExerciseRepository, IExerciseRepository exerciseRepository, IWorkoutTemplateRepository workoutTemplateRepository, IMapper mapper) : IWorkoutTemplateExerciseService
     {
         private readonly IWorkoutTemplateExerciseRepository _workoutTemplateExerciseRepository = workoutTemplateExerciseRepository;
         private readonly IWorkoutTemplateRepository _workoutTemplateRepository = workoutTemplateRepository;
+        private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
         private readonly IMapper _mapper = mapper;
 
         public async Task<List<WorkoutTemplateExerciseResponseDto>> GetWorkoutTemplateExercisesByWorkoutTemplateIdAsync(Guid workoutTemplateId)
@@ -19,17 +20,13 @@ namespace Fitness.Application.Services
             List<WorkoutTemplateExercise> workoutTemplatesExercises = await _workoutTemplateExerciseRepository.GetAllByWorkoutTemplateIdAsync(workoutTemplateId);
             return _mapper.Map<List<WorkoutTemplateExerciseResponseDto>>(workoutTemplatesExercises.OrderBy(wte => wte.Order).ToList());
         }
-
         public async Task<WorkoutTemplateExerciseResponseDto> CreateWorkoutTemplateExerciseAsync(Guid workoutTemplateId, CreateWorkoutTemplateExerciseDto createWorkoutTemplateExerciseDto)
         {
-            WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetByIdAsync(workoutTemplateId);
-            if (workoutTemplate is null)
-            {
-                throw new NotFoundException(workoutTemplateId, nameof(WorkoutTemplate));
-            }
+            await AllowCreatingWorkoutTemplateExerciseAsync(workoutTemplateId, createWorkoutTemplateExerciseDto.ExerciseId);
 
             int count = await _workoutTemplateExerciseRepository.CountByWorkoutTemplateIdAsync(workoutTemplateId);
             WorkoutTemplateExercise workoutTemplateExercise = _mapper.Map<WorkoutTemplateExercise>(createWorkoutTemplateExerciseDto);
+            workoutTemplateExercise.WorkoutTemplateId = workoutTemplateId;
             workoutTemplateExercise.Order = count + 1;
 
             await _workoutTemplateExerciseRepository.CreateAsync(workoutTemplateExercise);
@@ -60,7 +57,6 @@ namespace Fitness.Application.Services
 
             return new DeleteResponseMessageDto(workoutTemplateExerciseId, nameof(WorkoutTemplateExercise));
         }
-
         public async Task<WorkoutTemplateExerciseResponseDto> UpdateWorkoutTemplateExerciseAsync(Guid workoutTemplateExerciseId, UpdateWorkoutTemplateExerciseDto updateWorkoutTemplateExerciseDto)
         {
             WorkoutTemplateExercise? workoutTemplateExercise = await _workoutTemplateExerciseRepository.GetByIdAsync(workoutTemplateExerciseId);
@@ -75,19 +71,24 @@ namespace Fitness.Application.Services
 
             return _mapper.Map<WorkoutTemplateExerciseResponseDto>(workoutTemplateExercise);
         }
-
-        public async Task MoveWorkoutTemplateExerciseAsync(MoveWorkoutTemplateExerciseDto moveWorkoutTemplateExerciseDto)
+        public async Task MoveWorkoutTemplateExerciseAsync(Guid workoutTemplateExerciseId, int newOrder)
         {
-            WorkoutTemplateExercise? workoutTemplateExercise = await _workoutTemplateExerciseRepository.GetByIdAsync(moveWorkoutTemplateExerciseDto.Id);
+            WorkoutTemplateExercise? workoutTemplateExercise = await _workoutTemplateExerciseRepository.GetByIdAsync(workoutTemplateExerciseId);
             if (workoutTemplateExercise is null)
             {
-                throw new NotFoundException(moveWorkoutTemplateExerciseDto.Id, nameof(WorkoutTemplateExercise));
+                throw new NotFoundException(workoutTemplateExerciseId, nameof(WorkoutTemplateExercise));
             }
-            if (moveWorkoutTemplateExerciseDto.NewOrder == workoutTemplateExercise.Order) return;
+
 
             List<WorkoutTemplateExercise> workoutTemplateExercises = await _workoutTemplateExerciseRepository.GetAllByWorkoutTemplateIdAsync(workoutTemplateExercise.WorkoutTemplateId);
-            int newOrder = moveWorkoutTemplateExerciseDto.NewOrder;
             int oldOrder = workoutTemplateExercise.Order;
+            newOrder = Math.Max(1, Math.Min(newOrder, workoutTemplateExercises.Count));
+
+
+            if (newOrder == workoutTemplateExercise.Order) return;
+
+            workoutTemplateExercise.Order = 0;
+            await _workoutTemplateExerciseRepository.SaveChangesAsync();
 
             if (newOrder < oldOrder)
             {
@@ -106,6 +107,26 @@ namespace Fitness.Application.Services
 
             workoutTemplateExercise.Order = newOrder;
             await _workoutTemplateExerciseRepository.SaveChangesAsync();
+        }
+        private async Task AllowCreatingWorkoutTemplateExerciseAsync(Guid workoutTemplateId, Guid exerciseId)
+        {
+            WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetByIdAsync(workoutTemplateId);
+            if (workoutTemplate is null)
+            {
+                throw new NotFoundException(workoutTemplateId, nameof(WorkoutTemplate));
+            }
+
+            Exercise? exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
+            if (exercise is null)
+            {
+                throw new NotFoundException(exerciseId, nameof(Exercise));
+            }
+
+            bool alreadyExists = await _workoutTemplateExerciseRepository
+                 .ExistsAsync(wte => wte.WorkoutTemplateId == workoutTemplateId && wte.ExerciseId == exerciseId);
+
+            if (alreadyExists)
+                throw new BadRequestException($"Exercise {exerciseId} already exists in WorkoutTemplate {workoutTemplateId}.");
         }
     }
 }

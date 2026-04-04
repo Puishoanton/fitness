@@ -23,7 +23,6 @@ namespace Fitness.Application.Services
             {
                 throw new BadRequestException($"{nameof(WorkoutTemplate)}: {workoutTemplateId} is not found.");
             }
-
             List<ExerciseLog> exerciseLogs = _exerciseLogService.CreateExerciseLogsFromWorkoutTemplateExercises(workoutTemplate.WorkoutTemplateExercises.ToList());
 
             WorkoutSession workoutSession = new()

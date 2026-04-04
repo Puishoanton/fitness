@@ -1,4 +1,5 @@
-﻿using Fitness.Application.Interfaces.Repositories;
+﻿using System.Linq.Expressions;
+using Fitness.Application.Interfaces.Repositories;
 using Fitness.Domain.Entities;
 using Fitness.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,11 @@ namespace Fitness.Infrastructure.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<WorkoutTemplateExercise, bool>> predicate)
+        {
+            return await _context.WorkoutTemplateExercises.AnyAsync(predicate);
         }
     }
 }

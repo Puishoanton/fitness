@@ -9,6 +9,6 @@ namespace Fitness.Application.Interfaces.Services
         public Task<WorkoutTemplateExerciseResponseDto> CreateWorkoutTemplateExerciseAsync(Guid workoutTemplateId, CreateWorkoutTemplateExerciseDto createWorkoutTemplateExerciseDto);
         public Task<DeleteResponseMessageDto> DeleteWorkoutTemplateExerciseAsync(Guid workoutTemplateExerciseId);
         public Task<WorkoutTemplateExerciseResponseDto> UpdateWorkoutTemplateExerciseAsync(Guid workoutTemplateExerciseId, UpdateWorkoutTemplateExerciseDto updateWorkoutTemplateExerciseDto);
-        public Task MoveWorkoutTemplateExerciseAsync(MoveWorkoutTemplateExerciseDto moveWorkoutTemplateExerciseDto);
+        public Task MoveWorkoutTemplateExerciseAsync(Guid workoutTemplateExerciseId, int newOrder);
     }
 }

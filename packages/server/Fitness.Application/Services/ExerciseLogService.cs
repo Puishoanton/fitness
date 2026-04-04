@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.ExerciseLog;
+using Fitness.Application.DTOs.WorkoutTemplateExercise;
 using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
@@ -8,10 +9,12 @@ using Fitness.Domain.Entities;
 
 namespace Fitness.Application.Services
 {
-    public class ExerciseLogService(IExerciseLogRepository exerciseLogRepository, IWorkoutSessionRepository workoutSessionRepository, IMapper mapper) : IExerciseLogService
+    public class ExerciseLogService(IExerciseLogRepository exerciseLogRepository, IWorkoutSessionRepository workoutSessionRepository, IExerciseRepository exerciseRepository, IWorkoutTemplateExerciseService workoutTemplateExerciseService, IMapper mapper) : IExerciseLogService
     {
         private readonly IExerciseLogRepository _exerciseLogRepository = exerciseLogRepository;
         private readonly IWorkoutSessionRepository _workoutSessionRepository = workoutSessionRepository;
+        private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
+        private readonly IWorkoutTemplateExerciseService _workoutTemplateExerciseService = workoutTemplateExerciseService;
         private readonly IMapper _mapper = mapper;
         public async Task<ExerciseLogLightDto> CreateExerciseLogAsync(Guid exerciseId, Guid workoutSessionId)
         {
@@ -19,6 +22,11 @@ namespace Fitness.Application.Services
             if (workoutSession is null)
             {
                 throw new BadRequestException($"{nameof(WorkoutSession)}: {workoutSessionId} is not found.");
+            }
+            Exercise? exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
+            if (exercise is null)
+            {
+                throw new NotFoundException(exerciseId, nameof(Exercise));
             }
 
             int order = await _exerciseLogRepository.CountByWorkoutSessionIdAsync(workoutSessionId);
@@ -32,6 +40,12 @@ namespace Fitness.Application.Services
                 UpdatedAt = DateTimeOffset.UtcNow
             };
             exerciseLog = await _exerciseLogRepository.CreateAsync(exerciseLog);
+
+            CreateWorkoutTemplateExerciseDto createWte = new()
+            {
+                ExerciseId = exerciseId
+            };
+            await _workoutTemplateExerciseService.CreateWorkoutTemplateExerciseAsync(workoutSession.WorkoutTemplateId, createWte);
 
             return _mapper.Map<ExerciseLogLightDto>(exerciseLog);
         }

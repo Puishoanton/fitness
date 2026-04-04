@@ -105,6 +105,9 @@ builder.Services.AddScoped<IExerciseLogService, ExerciseLogService>();
 builder.Services.AddScoped<ISetLogRepository, SetLogRepository>();
 builder.Services.AddScoped<ISetLogService, SetLogService>();
 
+builder.Services.AddScoped<IWorkoutTemplateExerciseRepository, WorkoutTemplateExerciseRepository>();
+builder.Services.AddScoped<IWorkoutTemplateExerciseService, WorkoutTemplateExerciseService>();
+
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();

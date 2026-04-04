@@ -6,6 +6,7 @@ using Fitness.Application.DTOs.SetLog;
 using Fitness.Application.DTOs.User;
 using Fitness.Application.DTOs.WorkoutSession;
 using Fitness.Application.DTOs.WorkoutTemplate;
+using Fitness.Application.DTOs.WorkoutTemplateExercise;
 using Fitness.Domain.Entities;
 
 namespace Fitness.Application.Mapping
@@ -17,7 +18,6 @@ namespace Fitness.Application.Mapping
             CreateMap<CreateUserDto, User>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
-
             CreateMap<User, UserPayloadDto>();
             CreateMap<User, AuthResponseDto>();
 
@@ -54,6 +54,13 @@ namespace Fitness.Application.Mapping
             CreateMap<UpdateSetLogDto, SetLog>()
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
             CreateMap<SetLog, SetLogResponseDto>();
+
+            CreateMap<CreateWorkoutTemplateExerciseDto, WorkoutTemplateExercise>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+            CreateMap<UpdateWorkoutTemplateExerciseDto, WorkoutTemplateExercise>()
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
+            CreateMap<WorkoutTemplateExercise, WorkoutTemplateExerciseResponseDto>();
         }
     }
 }

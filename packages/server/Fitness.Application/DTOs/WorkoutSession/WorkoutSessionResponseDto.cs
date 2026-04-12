@@ -7,7 +7,6 @@ namespace Fitness.Application.DTOs.WorkoutSession
     {
         public Guid Id { get; set; }
         public int Duration { get; set; } = 0;
-        public int AverageRestTime { get; set; } = 0;
         public Status Status { get; set; }
         public List<ExerciseLogLightDto> ExerciseLogs { get; set; } = [];
         public DateTimeOffset CreatedAt { get; set; }

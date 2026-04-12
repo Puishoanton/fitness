@@ -9,7 +9,7 @@ namespace Fitness.Application.Interfaces.Services
         public Task<ExerciseResponseDto> CreateExerciseAsync(CreateExerciseDto createExerciseDto);
         public Task<ExerciseResponseDto> UpdateExerciseAsync(UpdateExerciseDto updateExerciseDto, Guid exerciseId);
         public Task<DeleteResponseMessageDto> DeleteExerciseAsync(Guid exerciseId);
-        public Task<ICollection<ExerciseLightDto>> GetAllExercisesAsync();
+        public Task<ICollection<ExerciseLightDto>> GetAllExercisesAsync(MuscleGroup? muscleGroup);
         public Task<ExerciseResponseDto?> GetExerciseByIdAsync(Guid exerciseId);
         public Task<List<MuscleGroup>> GetUniqueMuscleGroupsAsync();
     }

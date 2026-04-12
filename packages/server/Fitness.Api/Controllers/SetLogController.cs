@@ -34,13 +34,6 @@ namespace Fitness.Api.Controllers
             return Ok(updatedSetLog);
         }
 
-        [HttpGet("{setLogId}")]
-        public async Task<IActionResult> GetSetLogById(string setLogId)
-        {
-            SetLogResponseDto? setLog = await _setLogService.GetSetLogByIdAsync(Guid.Parse(setLogId));
-            return Ok(setLog);
-        }
-
         [HttpDelete("{setLogId}")]
         public async Task<IActionResult> DeleteSetLog(string setLogId)
         {

@@ -1,5 +1,6 @@
 ﻿using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.Exercise;
+using Fitness.Domain.Enums;
 
 namespace Fitness.Application.Interfaces.Services
 {
@@ -10,6 +11,6 @@ namespace Fitness.Application.Interfaces.Services
         public Task<DeleteResponseMessageDto> DeleteExerciseAsync(Guid exerciseId);
         public Task<ICollection<ExerciseLightDto>> GetAllExercisesAsync();
         public Task<ExerciseResponseDto?> GetExerciseByIdAsync(Guid exerciseId);
-
+        public Task<List<MuscleGroup>> GetUniqueMuscleGroupsAsync();
     }
 }

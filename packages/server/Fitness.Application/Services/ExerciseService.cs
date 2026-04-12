@@ -5,6 +5,7 @@ using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Enums;
 
 namespace Fitness.Application.Services
 {
@@ -64,6 +65,11 @@ namespace Fitness.Application.Services
                 throw new NotFoundException(exerciseId, nameof(Exercise));
             }
             return _mapper.Map<ExerciseResponseDto>(exercise);
+        }
+
+        public async Task<List<MuscleGroup>> GetUniqueMuscleGroupsAsync()
+        {
+            return await _exerciseRepository.GetUniqueMuscleGroupsAsync();
         }
     }
 }

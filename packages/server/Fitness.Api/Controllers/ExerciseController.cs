@@ -1,6 +1,7 @@
 ﻿using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.Exercise;
 using Fitness.Application.Interfaces.Services;
+using Fitness.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,12 @@ namespace Fitness.Api.Controllers
         {
             ICollection<ExerciseLightDto> exercises = await _exerciseService.GetAllExercisesAsync();
             return Ok(exercises);
+        }
+        [HttpGet("muscle-group")]
+        public async Task<IActionResult> GetMuscleGroups()
+        {
+            List<MuscleGroup> muscleGroups = await _exerciseService.GetUniqueMuscleGroupsAsync();
+            return Ok(muscleGroups);
         }
 
         [HttpPost]

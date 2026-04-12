@@ -35,7 +35,6 @@ namespace Fitness.Application.Services
             {
                 ExerciseId = exerciseId,
                 WorkoutSessionId = workoutSessionId,
-                Order = order + 1,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             };
@@ -46,20 +45,6 @@ namespace Fitness.Application.Services
                 ExerciseId = exerciseId
             };
             await _workoutTemplateExerciseService.CreateWorkoutTemplateExerciseAsync(workoutSession.WorkoutTemplateId, createWte);
-
-            return _mapper.Map<ExerciseLogLightDto>(exerciseLog);
-        }
-        public async Task<ExerciseLogLightDto> UpdateExerciseLogAsync(Guid exerciseLogId, UpdateExerciseLogDto updateExerciseLogDto)
-        {
-            ExerciseLog? exerciseLog = await _exerciseLogRepository.GetByIdAsync(exerciseLogId);
-            if (exerciseLog is null)
-            {
-                throw new NotFoundException(exerciseLogId, nameof(ExerciseLog));
-            }
-
-            _mapper.Map(updateExerciseLogDto, exerciseLog);
-            exerciseLog.UpdatedAt = DateTimeOffset.UtcNow;
-            await _exerciseLogRepository.UpdateAsync(exerciseLog);
 
             return _mapper.Map<ExerciseLogLightDto>(exerciseLog);
         }
@@ -99,7 +84,6 @@ namespace Fitness.Application.Services
                     WorkoutTemplateExerciseId = wte.Id,
                     ExerciseId = wte.ExerciseId,
                     SetLogs = [],
-                    Order = wte.Order
                 })
                 .ToList();
         }

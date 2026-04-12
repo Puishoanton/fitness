@@ -54,10 +54,6 @@ namespace Fitness.Infrastructure.Data
                 .HasForeignKey(el => el.ExerciseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ExerciseLog>()
-                .HasIndex(e => new { e.WorkoutSessionId, e.Order })
-                .IsUnique();
-
             modelBuilder.Entity<Exercise>()
                 .HasMany(e => e.WorkoutTemplateExercises)
                 .WithOne(wte => wte.Exercise)

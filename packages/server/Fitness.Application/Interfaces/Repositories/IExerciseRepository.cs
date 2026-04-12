@@ -6,5 +6,6 @@ namespace Fitness.Application.Interfaces.Repositories
     public interface IExerciseRepository : IRepository<Exercise>
     {
         public Task<List<MuscleGroup>> GetUniqueMuscleGroupsAsync();
+        public Task<ICollection<Exercise>> GetAllWithMuscleGroupAsync(MuscleGroup? muscleGroup);
     }
 }

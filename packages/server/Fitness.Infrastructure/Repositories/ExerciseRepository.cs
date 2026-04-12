@@ -17,5 +17,16 @@ namespace Fitness.Infrastructure.Repositories
                 .Distinct()
                 .ToListAsync();
         }
+
+        public async Task<ICollection<Exercise>> GetAllWithMuscleGroupAsync(MuscleGroup? muscleGroup)
+        {
+            IQueryable<Exercise> query = _context.Exercises;
+            if (muscleGroup.HasValue)
+            {
+                query = query.Where(e => e.MuscleGroup == muscleGroup);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

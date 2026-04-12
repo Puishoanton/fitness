@@ -51,9 +51,9 @@ namespace Fitness.Application.Services
             return new DeleteResponseMessageDto(exerciseId, nameof(Exercise));
         }
 
-        public async Task<ICollection<ExerciseLightDto>> GetAllExercisesAsync()
+        public async Task<ICollection<ExerciseLightDto>> GetAllExercisesAsync(MuscleGroup? muscleGroup)
         {
-            ICollection<Exercise> exercises = await _exerciseRepository.GetAllAsync();
+            ICollection<Exercise> exercises = await _exerciseRepository.GetAllWithMuscleGroupAsync(muscleGroup);
             return _mapper.Map<ICollection<ExerciseLightDto>>(exercises);
         }
 

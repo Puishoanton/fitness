@@ -15,9 +15,9 @@ namespace Fitness.Api.Controllers
         private readonly IExerciseService _exerciseService = exerciseService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllExercises()
+        public async Task<IActionResult> GetAllExercises([FromQuery] MuscleGroup? muscleGroup)
         {
-            ICollection<ExerciseLightDto> exercises = await _exerciseService.GetAllExercisesAsync();
+            ICollection<ExerciseLightDto> exercises = await _exerciseService.GetAllExercisesAsync(muscleGroup);
             return Ok(exercises);
         }
         [HttpGet("muscle-group")]

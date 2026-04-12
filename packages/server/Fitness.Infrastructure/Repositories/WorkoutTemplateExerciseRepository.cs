@@ -14,6 +14,7 @@ namespace Fitness.Infrastructure.Repositories
         {
             return await _context.WorkoutTemplateExercises
                 .Where(wte => wte.WorkoutTemplateId == workoutTemplateId)
+                .Include(wte => wte.Exercise)
                 .OrderBy(wte => wte.Order)
                 .ToListAsync();
         }

@@ -44,8 +44,6 @@ namespace Fitness.Application.Mapping
             CreateMap<WorkoutSession, WorkoutSessionLightDto>();
 
             CreateMap<ExerciseLogLightDto, ExerciseLog>();
-            CreateMap<UpdateExerciseLogDto, ExerciseLog>()
-               .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow));
             CreateMap<ExerciseLog, ExerciseLogLightDto>();
 
             CreateMap<CreateSetLogDto, SetLog>()

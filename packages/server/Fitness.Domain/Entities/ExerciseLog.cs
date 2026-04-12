@@ -16,7 +16,6 @@ namespace Fitness.Domain.Entities
         public Guid? WorkoutTemplateExerciseId { get; set; }
         public WorkoutTemplateExercise? WorkoutTemplateExercise { get; set; }
 
-        public int Order { get; set; }
         public ICollection<SetLog> SetLogs { get; set; } = [];
     }
 }

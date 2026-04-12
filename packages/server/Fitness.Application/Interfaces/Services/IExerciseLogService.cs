@@ -7,7 +7,6 @@ namespace Fitness.Application.Interfaces.Services
     public interface IExerciseLogService
     {
         public Task<ExerciseLogLightDto> CreateExerciseLogAsync(Guid exerciseId, Guid workoutSessionId);
-        public Task<ExerciseLogLightDto> UpdateExerciseLogAsync(Guid exerciseLogId, UpdateExerciseLogDto updateExerciseLogDto);
         public Task<ExerciseLogLightDto> GetExerciseLogByIdAsync(Guid exerciseLogId);
         public Task<List<ExerciseLogLightDto>> GetAllExerciseLogsAsync();
         public Task<DeleteResponseMessageDto> DeleteExerciseLogAsync(Guid exerciseLogId);

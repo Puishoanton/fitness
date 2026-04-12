@@ -27,20 +27,6 @@ namespace Fitness.Api.Controllers
             return Ok(exerciseLog);
         }
 
-        [HttpPatch("{exerciseLogId}")]
-        public async Task<IActionResult> UpdateExerciseLog(string exerciseLogId, [FromBody] UpdateExerciseLogDto updateExerciseLogDto)
-        {
-            ExerciseLogLightDto updatedExerciseLog = await _exerciseLogService.UpdateExerciseLogAsync(Guid.Parse(exerciseLogId), updateExerciseLogDto);
-            return Ok(updatedExerciseLog);
-        }
-
-        [HttpGet("{exerciseLogId}")]
-        public async Task<IActionResult> GetExerciseLogById(string exerciseLogId)
-        {
-            ExerciseLogLightDto? exerciseLog = await _exerciseLogService.GetExerciseLogByIdAsync(Guid.Parse(exerciseLogId));
-            return Ok(exerciseLog);
-        }
-
         [HttpDelete("{exerciseLogId}")]
         public async Task<IActionResult> DeleteExerciseLog(string exerciseLogId)
         {

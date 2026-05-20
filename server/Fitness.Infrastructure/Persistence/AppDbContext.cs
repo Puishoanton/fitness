@@ -3,7 +3,7 @@ using Fitness.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Fitness.Infrastructure.Data
+namespace Fitness.Infrastructure.Persistence
 {
 	public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 	{

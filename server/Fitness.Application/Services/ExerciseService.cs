@@ -1,11 +1,11 @@
 using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.Exercise;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
 using Fitness.Domain.Enums;
+using Fitness.Domain.Exceptions;
 
 namespace Fitness.Application.Services
 {
@@ -23,7 +23,7 @@ namespace Fitness.Application.Services
 			return _mapper.Map<ExerciseResponseDto>(createdExercise);
 		}
 
-		public async Task<ExerciseResponseDto> UpdateExerciseAsync(UpdateExerciseDto updateExerciseDto, Guid exerciseId)
+		public async Task<ExerciseResponseDto> UpdateExerciseAsync(Guid exerciseId, UpdateExerciseDto updateExerciseDto)
 		{
 			Exercise? updatedExercise = await _exerciseRepository.GetByIdAsync(exerciseId);
 			if (updatedExercise is null)
@@ -40,9 +40,9 @@ namespace Fitness.Application.Services
 
 		public async Task<DeleteResponseMessageDto> DeleteExerciseAsync(Guid exerciseId)
 		{
-			bool IsDeleted = await _exerciseRepository.DeleteAsync(exerciseId);
+			bool isDeleted = await _exerciseRepository.DeleteAsync(exerciseId);
 
-			if (!IsDeleted)
+			if (!isDeleted)
 			{
 				throw new NotFoundException(exerciseId, nameof(Exercise));
 			}

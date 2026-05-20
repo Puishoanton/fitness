@@ -1,10 +1,10 @@
 using AutoMapper;
 using Fitness.Application.DTOs.ExerciseLog;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Application.Services;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 

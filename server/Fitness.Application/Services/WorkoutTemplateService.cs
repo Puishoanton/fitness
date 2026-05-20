@@ -1,10 +1,10 @@
 using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.WorkoutTemplate;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Exceptions;
 
 namespace Fitness.Application.Services
 {
@@ -23,7 +23,7 @@ namespace Fitness.Application.Services
 			return _mapper.Map<WorkoutTemplateResponseDto>(createdWorkoutTemplate);
 		}
 
-		public async Task<WorkoutTemplateResponseDto> UpdateWorkoutTemplateAsync(UpdateWorkoutTemplateDto updateWorkoutTemplateDto, Guid workoutTemplateId)
+		public async Task<WorkoutTemplateResponseDto> UpdateWorkoutTemplateAsync(Guid workoutTemplateId, UpdateWorkoutTemplateDto updateWorkoutTemplateDto)
 		{
 			WorkoutTemplate? updatedWorkoutTemplate = await _workoutTemplateRepository.GetByIdAsync(workoutTemplateId);
 			if (updatedWorkoutTemplate is null)
@@ -39,9 +39,9 @@ namespace Fitness.Application.Services
 
 		public async Task<DeleteResponseMessageDto> DeleteWorkoutTemplateAsync(Guid workoutTemplateId)
 		{
-			bool IsDeleted = await _workoutTemplateRepository.DeleteAsync(workoutTemplateId);
+			bool isDeleted = await _workoutTemplateRepository.DeleteAsync(workoutTemplateId);
 
-			if (!IsDeleted)
+			if (!isDeleted)
 			{
 				throw new NotFoundException(workoutTemplateId, nameof(WorkoutTemplate));
 			}
@@ -50,7 +50,7 @@ namespace Fitness.Application.Services
 			return new DeleteResponseMessageDto(workoutTemplateId, nameof(WorkoutTemplate));
 		}
 
-		public async Task<WorkoutTemplateWithExercisesDto?> GetWorkoutTemplateByIdWithExercisesAsync(Guid workoutTemplateId)
+		public async Task<WorkoutTemplateWithExercisesDto> GetWorkoutTemplateByIdWithExercisesAsync(Guid workoutTemplateId)
 		{
 			WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetWorkoutTemplateByIdWithExercises(workoutTemplateId);
 			if (workoutTemplate is null)

@@ -1,11 +1,11 @@
 using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.WorkoutSession;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
 using Fitness.Domain.Enums;
+using Fitness.Domain.Exceptions;
 
 namespace Fitness.Application.Services
 {
@@ -31,8 +31,6 @@ namespace Fitness.Application.Services
 				WorkoutTemplateId = workoutTemplateId,
 				Status = Status.InProgress,
 				ExerciseLogs = exerciseLogs,
-				CreatedAt = DateTimeOffset.UtcNow,
-				UpdatedAt = DateTimeOffset.UtcNow
 			};
 
 			await _workoutSessionRepository.CreateAsync(workoutSession);

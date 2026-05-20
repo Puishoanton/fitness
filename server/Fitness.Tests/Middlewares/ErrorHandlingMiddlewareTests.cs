@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Fitness.Infrastructure.Middlewares;
+using Fitness.Api.Middlewares;
 using Fitness.Tests.Exceptions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;

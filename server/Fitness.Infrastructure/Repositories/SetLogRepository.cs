@@ -1,6 +1,6 @@
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Domain.Entities;
-using Fitness.Infrastructure.Data;
+using Fitness.Infrastructure.Persistence;
 
 namespace Fitness.Infrastructure.Repositories
 {

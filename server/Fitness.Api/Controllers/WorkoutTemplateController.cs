@@ -32,7 +32,7 @@ namespace Fitness.Api.Controllers
 		[HttpPatch("{workoutTemplateId}")]
 		public async Task<IActionResult> UpdateWorkoutTemplate([FromBody] UpdateWorkoutTemplateDto updateWorkoutTemplateDto, string workoutTemplateId)
 		{
-			WorkoutTemplateResponseDto workoutTemplate = await _workoutTemplateService.UpdateWorkoutTemplateAsync(updateWorkoutTemplateDto, Guid.Parse(workoutTemplateId));
+			WorkoutTemplateResponseDto workoutTemplate = await _workoutTemplateService.UpdateWorkoutTemplateAsync(Guid.Parse(workoutTemplateId), updateWorkoutTemplateDto);
 			return Ok(workoutTemplate);
 		}
 

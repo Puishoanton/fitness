@@ -2,10 +2,10 @@ using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.ExerciseLog;
 using Fitness.Application.DTOs.WorkoutTemplateExercise;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Exceptions;
 
 namespace Fitness.Application.Services
 {
@@ -29,14 +29,10 @@ namespace Fitness.Application.Services
 				throw new NotFoundException(exerciseId, nameof(Exercise));
 			}
 
-			int order = await _exerciseLogRepository.CountByWorkoutSessionIdAsync(workoutSessionId);
-
 			ExerciseLog exerciseLog = new()
 			{
 				ExerciseId = exerciseId,
 				WorkoutSessionId = workoutSessionId,
-				CreatedAt = DateTimeOffset.UtcNow,
-				UpdatedAt = DateTimeOffset.UtcNow
 			};
 			exerciseLog = await _exerciseLogRepository.CreateAsync(exerciseLog);
 
@@ -65,9 +61,9 @@ namespace Fitness.Application.Services
 		}
 		public async Task<DeleteResponseMessageDto> DeleteExerciseLogAsync(Guid exerciseLogId)
 		{
-			bool IsDeleted = await _exerciseLogRepository.DeleteAsync(exerciseLogId);
+			bool isDeleted = await _exerciseLogRepository.DeleteAsync(exerciseLogId);
 
-			if (!IsDeleted)
+			if (!isDeleted)
 			{
 				throw new NotFoundException(exerciseLogId, nameof(ExerciseLog));
 			}

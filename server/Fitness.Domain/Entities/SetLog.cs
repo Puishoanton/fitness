@@ -1,11 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+using Fitness.Domain.Common;
 
 namespace Fitness.Domain.Entities
 {
 	public class SetLog : BaseEntity
 	{
-		[Key]
-		public Guid Id { get; set; }
 		public Guid ExerciseLogId { get; set; }
 		public ExerciseLog? ExerciseLog { get; set; }
 		public int Order { get; set; }

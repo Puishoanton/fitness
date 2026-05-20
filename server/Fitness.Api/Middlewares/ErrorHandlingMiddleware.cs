@@ -1,10 +1,8 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
+using Fitness.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Fitness.Application.Exceptions;
 
-namespace Fitness.Infrastructure.Middlewares
+namespace Fitness.Api.Middlewares
 {
 	public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
 	{

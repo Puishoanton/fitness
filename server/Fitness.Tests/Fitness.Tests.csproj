@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fitness.Api\Fitness.Api.csproj" />
     <ProjectReference Include="..\Fitness.Application\Fitness.Application.csproj" />
     <ProjectReference Include="..\Fitness.Infrastructure\Fitness.Infrastructure.csproj" />
     <ProjectReference Include="..\Fitness.Domain\Fitness.Domain.csproj" />

@@ -1,18 +1,18 @@
 using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.SetLog;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Exceptions;
 
 namespace Fitness.Application.Services
 {
 	public class SetLogService(ISetLogRepository setLogRepository, IExerciseLogRepository exerciseLogRepository, IMapper mapper) : ISetLogService
 	{
-		public readonly ISetLogRepository _setLogRepository = setLogRepository;
-		public readonly IExerciseLogRepository _exerciseLogRepository = exerciseLogRepository;
-		public readonly IMapper _mapper = mapper;
+		private readonly ISetLogRepository _setLogRepository = setLogRepository;
+		private readonly IExerciseLogRepository _exerciseLogRepository = exerciseLogRepository;
+		private readonly IMapper _mapper = mapper;
 
 		public async Task<SetLogResponseDto> CreateSetLogAsync(CreateSetLogDto createSetLogDto, Guid exerciseLogId)
 		{

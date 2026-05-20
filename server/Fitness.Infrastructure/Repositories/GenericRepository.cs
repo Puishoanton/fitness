@@ -1,5 +1,5 @@
 using Fitness.Application.Interfaces.Repositories;
-using Fitness.Infrastructure.Data;
+using Fitness.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fitness.Infrastructure.Repositories

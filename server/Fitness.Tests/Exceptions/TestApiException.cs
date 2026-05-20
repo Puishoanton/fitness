@@ -1,4 +1,4 @@
-using Fitness.Application.Exceptions;
+using Fitness.Domain.Exceptions;
 
 namespace Fitness.Tests.Exceptions
 {

@@ -1,4 +1,4 @@
-namespace Fitness.Application.Exceptions
+namespace Fitness.Domain.Exceptions
 {
 	public abstract class ApiException(int statusCode, string message) : Exception(message)
 	{

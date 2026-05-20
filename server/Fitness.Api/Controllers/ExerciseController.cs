@@ -37,7 +37,7 @@ namespace Fitness.Api.Controllers
 		[HttpPatch("{exerciseId}")]
 		public async Task<IActionResult> UpdateExercise([FromBody] UpdateExerciseDto updateExerciseDto, string exerciseId)
 		{
-			ExerciseResponseDto exercise = await _exerciseService.UpdateExerciseAsync(updateExerciseDto, Guid.Parse(exerciseId));
+			ExerciseResponseDto exercise = await _exerciseService.UpdateExerciseAsync(Guid.Parse(exerciseId), updateExerciseDto);
 			return Ok(exercise);
 		}
 

@@ -1,11 +1,11 @@
 using AutoMapper;
 using Fitness.Application.DTOs.Auth;
 using Fitness.Application.DTOs.User;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Application.Interfaces.Validators;
 using Fitness.Domain.Entities;
+using Fitness.Domain.Exceptions;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;

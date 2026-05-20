@@ -1,12 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+using Fitness.Domain.Common;
 
 namespace Fitness.Domain.Entities
 {
 	public class ExerciseLog : BaseEntity
 	{
-		[Key]
-		public Guid Id { get; set; }
-
 		public Guid WorkoutSessionId { get; set; }
 		public WorkoutSession? WorkoutSession { get; set; }
 

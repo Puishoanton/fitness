@@ -1,12 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+using Fitness.Domain.Common;
 
 namespace Fitness.Domain.Entities
 {
 	public class WorkoutTemplateExercise : BaseEntity
 	{
-		[Key]
-		public Guid Id { get; set; }
-
 		public Guid WorkoutTemplateId { get; set; }
 		public WorkoutTemplate? WorkoutTemplate { get; set; }
 

@@ -1,11 +1,11 @@
 using AutoMapper;
 using Fitness.Application.DTOs.Common;
 using Fitness.Application.DTOs.Exercise;
-using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Services;
 using Fitness.Domain.Entities;
 using Fitness.Domain.Enums;
+using Fitness.Domain.Exceptions;
 using FluentAssertions;
 using Moq;
 
@@ -127,7 +127,7 @@ namespace Fitness.Tests.Services
 				);
 
 			//Act
-			ExerciseResponseDto result = await exerciseService.UpdateExerciseAsync(updateExerciseDto, _exerciseId);
+			ExerciseResponseDto result = await exerciseService.UpdateExerciseAsync(_exerciseId, updateExerciseDto);
 
 			//Assert
 			result.Should().NotBeNull();
@@ -165,7 +165,7 @@ namespace Fitness.Tests.Services
 				);
 
 			//Act
-			Func<Task> act = async () => await exerciseService.UpdateExerciseAsync(updateExerciseDto, _exerciseId);
+			Func<Task> act = async () => await exerciseService.UpdateExerciseAsync(_exerciseId, updateExerciseDto);
 
 			//Assert
 			await act.Should().ThrowAsync<NotFoundException>()

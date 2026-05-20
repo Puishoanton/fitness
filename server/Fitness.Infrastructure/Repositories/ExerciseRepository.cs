@@ -1,7 +1,7 @@
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Domain.Entities;
 using Fitness.Domain.Enums;
-using Fitness.Infrastructure.Data;
+using Fitness.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fitness.Infrastructure.Repositories

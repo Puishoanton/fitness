@@ -6,9 +6,9 @@ namespace Fitness.Application.Interfaces.Services
 	public interface IWorkoutTemplateService
 	{
 		public Task<WorkoutTemplateResponseDto> CreateWorkoutTemplateAsync(CreateWorkoutTemplateDto createWorkoutTemplateDto, Guid userId);
-		public Task<WorkoutTemplateResponseDto> UpdateWorkoutTemplateAsync(UpdateWorkoutTemplateDto updateWorkoutTemplateDto, Guid workoutTemplateId);
+		public Task<WorkoutTemplateResponseDto> UpdateWorkoutTemplateAsync(Guid workoutTemplateId, UpdateWorkoutTemplateDto updateWorkoutTemplateDto);
 		public Task<DeleteResponseMessageDto> DeleteWorkoutTemplateAsync(Guid workoutTemplateId);
-		public Task<WorkoutTemplateWithExercisesDto?> GetWorkoutTemplateByIdWithExercisesAsync(Guid workoutTemplateId);
+		public Task<WorkoutTemplateWithExercisesDto> GetWorkoutTemplateByIdWithExercisesAsync(Guid workoutTemplateId);
 		public Task<ICollection<WorkoutTemplateResponseDto>> GetWorkoutTemplatesAsync();
 	}
 }

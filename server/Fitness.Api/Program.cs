@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Fitness.Api.Middlewares;
 using Fitness.Api.Swagger;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
@@ -7,8 +8,7 @@ using Fitness.Application.Interfaces.Validators;
 using Fitness.Application.Mapping;
 using Fitness.Application.Services;
 using Fitness.Application.Validators;
-using Fitness.Infrastructure.Data;
-using Fitness.Infrastructure.Middlewares;
+using Fitness.Infrastructure.Persistence;
 using Fitness.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +17,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddCors(options =>
 {
 	string? clientUrl = builder.Configuration["ClientUrl"];
@@ -112,7 +111,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
@@ -120,9 +118,9 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 app.UseCors("AllowedOrigins");
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 

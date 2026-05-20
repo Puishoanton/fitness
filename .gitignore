@@ -1,38 +1,48 @@
-bin/
-obj/
-out/
-
+# Visual Studio
+.vs/
 *.user
 *.suo
 *.userosscache
 *.userprefs
-*.pidb
-*.svclog
-*.vscode/
 
-.vs/
-*.VC.db
-*.VC.VC.opendb
-
-*.log
-*.tlog
-*.tmp
-*.temp
-
-appsettings.*.json
-appsettings.json
-secrets.json
-
-Migrations/obj/
-
+# Build outputs
+bin/
+obj/
+out/
 TestResults/
 *.coverage
 *.coveragexml
 *.trx
-*.ncrunchsolution
 
-*.dbmdl
-*.bak
+# Logs
+*.log
+*.tlog
+*.svclog
+
+# Temp files
+*.tmp
+*.temp
 *.swp
 *.DS_Store
 Thumbs.db
+*.bak
+*.pidb
+*.VC.db
+*.VC.VC.opendb
+*.dbmdl
+*.ncrunchsolution
+
+# Secrets (never commit)
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+secrets.json
+
+# Node / Expo
+node_modules/
+.expo/
+.env
+.env.local
+
+# Migrations temp
+Migrations/obj/

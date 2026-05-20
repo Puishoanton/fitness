@@ -1,0 +1,25 @@
+{
+	"recommendations": [
+		// TypeScript & React Native
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"msjsdiag.vscode-react-native",
+		"expo.vscode-expo-tools",
+
+		// Tailwind / NativeWind
+		"bradlc.vscode-tailwindcss",
+
+		// Git
+		"eamodio.gitlens",
+
+		// DX improvements
+		"usernamehw.errorlens",
+		"christian-kohler.path-intellisense",
+		"formulahendry.auto-rename-tag",
+		"rangav.vscode-thunder-client",
+
+		// C# (if opening server/ in VS Code)
+		"ms-dotnettools.csharp",
+		"ms-dotnettools.vscode-dotnet-runtime"
+	]
+}

@@ -1,1 +1,0 @@
-dotnet test packages/server/Fitness.sln --verbosity minimal

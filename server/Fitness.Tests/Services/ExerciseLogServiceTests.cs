@@ -1,5 +1,6 @@
 using AutoMapper;
 using Fitness.Application.DTOs.ExerciseLog;
+using Fitness.Application.DTOs.WorkoutTemplateExercise;
 using Fitness.Application.Interfaces.Repositories;
 using Fitness.Application.Interfaces.Services;
 using Fitness.Application.Services;
@@ -29,7 +30,7 @@ namespace Fitness.Tests.Services
 		public async Task CreateExerciseLogAsync_WhenWorkoutSessionExists_ShouldCreateExerciseLog()
 		{
 			// Arrange
-			WorkoutSession workoutSession = new() { Id = _workoutSessionId };
+			WorkoutSession workoutSession = new() { Id = _workoutSessionId, WorkoutTemplateId = Guid.NewGuid() };
 			Exercise exercise = new() { Id = _exerciseId };
 			ExerciseLog exerciseLog = new() { Id = _exerciseLogId, ExerciseId = _exerciseId, WorkoutSessionId = _workoutSessionId };
 			ExerciseLogLightDto exerciseLogLightDto = new() { Id = _exerciseLogId };
@@ -43,12 +44,14 @@ namespace Fitness.Tests.Services
 				.ReturnsAsync(exercise);
 
 			_exerciseLogRepositoryMock
-				.Setup(r => r.CountByWorkoutSessionIdAsync(_workoutSessionId))
-				.ReturnsAsync(0);
-
-			_exerciseLogRepositoryMock
 				.Setup(r => r.CreateAsync(It.IsAny<ExerciseLog>()))
 				.ReturnsAsync(exerciseLog);
+
+			_workoutTemplateExerciseServiceMock
+				.Setup(s => s.CreateWorkoutTemplateExerciseAsync(
+					workoutSession.WorkoutTemplateId,
+					It.IsAny<CreateWorkoutTemplateExerciseDto>()))
+				.ReturnsAsync(new WorkoutTemplateExerciseResponseDto());
 
 			_mapperMock
 				.Setup(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()))
@@ -65,8 +68,10 @@ namespace Fitness.Tests.Services
 
 			_workoutSessionRepositoryMock.Verify(r => r.GetByIdAsync(_workoutSessionId), Times.Once);
 			_exerciseRepositoryMock.Verify(r => r.GetByIdAsync(_exerciseId), Times.Once);
-			_exerciseLogRepositoryMock.Verify(r => r.CountByWorkoutSessionIdAsync(_workoutSessionId), Times.Once);
 			_exerciseLogRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<ExerciseLog>()), Times.Once);
+			_workoutTemplateExerciseServiceMock.Verify(s => s.CreateWorkoutTemplateExerciseAsync(
+				workoutSession.WorkoutTemplateId,
+				It.IsAny<CreateWorkoutTemplateExerciseDto>()), Times.Once);
 			_mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()), Times.Once);
 		}
 

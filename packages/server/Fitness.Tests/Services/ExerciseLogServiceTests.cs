@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Fitness.Application.DTOs.ExerciseLog;
 using Fitness.Application.Exceptions;
 using Fitness.Application.Interfaces.Repositories;
+using Fitness.Application.Interfaces.Services;
 using Fitness.Application.Services;
 using Fitness.Domain.Entities;
 using FluentAssertions;
@@ -9,214 +10,161 @@ using Moq;
 
 namespace Fitness.Tests.Services
 {
-    public class ExerciseLogServiceTests
-    {
-        private static readonly Guid _exerciseId = Guid.NewGuid();
-        private static readonly Guid _workoutSessionId = Guid.NewGuid();
-        private static readonly Guid _exerciseLogId = Guid.NewGuid();
+	public class ExerciseLogServiceTests
+	{
+		private static readonly Guid _exerciseId = Guid.NewGuid();
+		private static readonly Guid _workoutSessionId = Guid.NewGuid();
+		private static readonly Guid _exerciseLogId = Guid.NewGuid();
 
-        private readonly Mock<IExerciseLogRepository> _exerciseLogRepositoryMock = new();
-        private readonly Mock<IWorkoutSessionRepository> _workoutSessionRepositoryMock = new();
-        private readonly Mock<IMapper> _mapperMock = new();
+		private readonly Mock<IExerciseLogRepository> _exerciseLogRepositoryMock = new();
+		private readonly Mock<IWorkoutSessionRepository> _workoutSessionRepositoryMock = new();
+		private readonly Mock<IExerciseRepository> _exerciseRepositoryMock = new();
+		private readonly Mock<IWorkoutTemplateExerciseService> _workoutTemplateExerciseServiceMock = new();
+		private readonly Mock<IMapper> _mapperMock = new();
 
-        private ExerciseLogService ExerciseLogService() =>
-            new(_exerciseLogRepositoryMock.Object, _workoutSessionRepositoryMock.Object, _mapperMock.Object);
+		private ExerciseLogService ExerciseLogService() =>
+			new(_exerciseLogRepositoryMock.Object, _workoutSessionRepositoryMock.Object, _exerciseRepositoryMock.Object, _workoutTemplateExerciseServiceMock.Object, _mapperMock.Object);
 
-        [Fact]
-        public async Task CreateExerciseLogAsync_WhenWorkoutSessionExists_ShouldCreateExerciseLog()
-        {
-            // Arrange
-            WorkoutSession workoutSession = new() { Id = _workoutSessionId };
-            ExerciseLog exerciseLog = new() { Id = _exerciseLogId, ExerciseId = _exerciseId, WorkoutSessionId = _workoutSessionId };
-            ExerciseLogLightDto exerciseLogLightDto = new() { Id = _exerciseLogId };
+		[Fact]
+		public async Task CreateExerciseLogAsync_WhenWorkoutSessionExists_ShouldCreateExerciseLog()
+		{
+			// Arrange
+			WorkoutSession workoutSession = new() { Id = _workoutSessionId };
+			Exercise exercise = new() { Id = _exerciseId };
+			ExerciseLog exerciseLog = new() { Id = _exerciseLogId, ExerciseId = _exerciseId, WorkoutSessionId = _workoutSessionId };
+			ExerciseLogLightDto exerciseLogLightDto = new() { Id = _exerciseLogId };
 
-            _workoutSessionRepositoryMock
-                .Setup(r => r.GetByIdAsync(_workoutSessionId))
-                .ReturnsAsync(workoutSession);
+			_workoutSessionRepositoryMock
+				.Setup(r => r.GetByIdAsync(_workoutSessionId))
+				.ReturnsAsync(workoutSession);
 
-            _exerciseLogRepositoryMock
-                .Setup(r => r.CountByWorkoutSessionIdAsync(_workoutSessionId))
-                .ReturnsAsync(0);
+			_exerciseRepositoryMock
+				.Setup(r => r.GetByIdAsync(_exerciseId))
+				.ReturnsAsync(exercise);
 
-            _exerciseLogRepositoryMock
-                .Setup(r => r.CreateAsync(It.IsAny<ExerciseLog>()))
-                .ReturnsAsync(exerciseLog);
+			_exerciseLogRepositoryMock
+				.Setup(r => r.CountByWorkoutSessionIdAsync(_workoutSessionId))
+				.ReturnsAsync(0);
 
-            _mapperMock
-                .Setup(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()))
-                .Returns(exerciseLogLightDto);
+			_exerciseLogRepositoryMock
+				.Setup(r => r.CreateAsync(It.IsAny<ExerciseLog>()))
+				.ReturnsAsync(exerciseLog);
 
-            ExerciseLogService exerciseLogService = ExerciseLogService();
+			_mapperMock
+				.Setup(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()))
+				.Returns(exerciseLogLightDto);
 
-            // Act
-            ExerciseLogLightDto result = await exerciseLogService.CreateExerciseLogAsync(_exerciseId, _workoutSessionId);
+			ExerciseLogService exerciseLogService = ExerciseLogService();
 
-            // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be(_exerciseLogId);
+			// Act
+			ExerciseLogLightDto result = await exerciseLogService.CreateExerciseLogAsync(_exerciseId, _workoutSessionId);
 
-            _workoutSessionRepositoryMock.Verify(r => r.GetByIdAsync(_workoutSessionId), Times.Once);
-            _exerciseLogRepositoryMock.Verify(r => r.CountByWorkoutSessionIdAsync(_workoutSessionId), Times.Once);
-            _exerciseLogRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<ExerciseLog>()), Times.Once);
-            _mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()), Times.Once);
-        }
+			// Assert
+			result.Should().NotBeNull();
+			result.Id.Should().Be(_exerciseLogId);
 
-        [Fact]
-        public async Task CreateExerciseLogAsync_WhenWorkoutSessionDoesNotExist_ShouldThrowBadRequest()
-        {
-            // Arrange
-            _workoutSessionRepositoryMock
-                .Setup(r => r.GetByIdAsync(_workoutSessionId))
-                .ReturnsAsync((WorkoutSession?)null);
+			_workoutSessionRepositoryMock.Verify(r => r.GetByIdAsync(_workoutSessionId), Times.Once);
+			_exerciseRepositoryMock.Verify(r => r.GetByIdAsync(_exerciseId), Times.Once);
+			_exerciseLogRepositoryMock.Verify(r => r.CountByWorkoutSessionIdAsync(_workoutSessionId), Times.Once);
+			_exerciseLogRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<ExerciseLog>()), Times.Once);
+			_mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()), Times.Once);
+		}
 
-            ExerciseLogService exerciseLogService = ExerciseLogService();
+		[Fact]
+		public async Task CreateExerciseLogAsync_WhenWorkoutSessionDoesNotExist_ShouldThrowBadRequest()
+		{
+			// Arrange
+			_workoutSessionRepositoryMock
+				.Setup(r => r.GetByIdAsync(_workoutSessionId))
+				.ReturnsAsync((WorkoutSession?)null);
 
-            // Act
-            Func<Task> act = async () => await exerciseLogService.CreateExerciseLogAsync(_exerciseId, _workoutSessionId);
+			ExerciseLogService exerciseLogService = ExerciseLogService();
 
-            // Assert
-            await act.Should().ThrowAsync<BadRequestException>()
-                .WithMessage($"{nameof(WorkoutSession)}: {_workoutSessionId} is not found.");
+			// Act
+			Func<Task> act = async () => await exerciseLogService.CreateExerciseLogAsync(_exerciseId, _workoutSessionId);
 
-            _workoutSessionRepositoryMock.Verify(r => r.GetByIdAsync(_workoutSessionId), Times.Once);
-            _exerciseLogRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<ExerciseLog>()), Times.Never);
-        }
+			// Assert
+			await act.Should().ThrowAsync<BadRequestException>()
+				.WithMessage($"{nameof(WorkoutSession)}: {_workoutSessionId} is not found.");
 
-        [Fact]
-        public async Task UpdateExerciseLogAsync_WhenExists_ShouldUpdateExerciseLog()
-        {
-            // Arrange
-            UpdateExerciseLogDto updateExerciseLogDto = new() { Order = 2 };
-            ExerciseLog exerciseLog = new() { Id = _exerciseLogId, ExerciseId = _exerciseId };
-            ExerciseLogLightDto exerciseLogLightDto = new() { Id = _exerciseLogId };
+			_workoutSessionRepositoryMock.Verify(r => r.GetByIdAsync(_workoutSessionId), Times.Once);
+			_exerciseLogRepositoryMock.Verify(r => r.CreateAsync(It.IsAny<ExerciseLog>()), Times.Never);
+		}
 
-            _exerciseLogRepositoryMock
-                .Setup(r => r.GetByIdAsync(_exerciseLogId))
-                .ReturnsAsync(exerciseLog);
+		[Fact]
+		public async Task GetExerciseLogByIdAsync_WhenFound_ShouldReturnDto()
+		{
+			// Arrange
+			ExerciseLog exerciseLog = new() { Id = _exerciseLogId };
+			ExerciseLogLightDto exerciseLogLightDto = new() { Id = _exerciseLogId };
 
-            _mapperMock
-                .Setup(m => m.Map(updateExerciseLogDto, exerciseLog))
-                .Returns(exerciseLog);
+			_exerciseLogRepositoryMock
+				.Setup(r => r.GetByIdAsync(_exerciseLogId))
+				.ReturnsAsync(exerciseLog);
 
-            _exerciseLogRepositoryMock
-                .Setup(r => r.UpdateAsync(exerciseLog))
-                .ReturnsAsync(exerciseLog);
+			_mapperMock
+				.Setup(m => m.Map<ExerciseLogLightDto>(exerciseLog))
+				.Returns(exerciseLogLightDto);
 
-            _mapperMock
-                .Setup(m => m.Map<ExerciseLogLightDto>(exerciseLog))
-                .Returns(exerciseLogLightDto);
+			ExerciseLogService exerciseLogService = ExerciseLogService();
 
-            ExerciseLogService exerciseLogService = ExerciseLogService();
+			// Act
+			ExerciseLogLightDto result = await exerciseLogService.GetExerciseLogByIdAsync(_exerciseLogId);
 
-            // Act
-            ExerciseLogLightDto result = await exerciseLogService.UpdateExerciseLogAsync(_exerciseLogId, updateExerciseLogDto);
+			// Assert
+			result.Should().NotBeNull();
+			result.Id.Should().Be(_exerciseLogId);
 
-            // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be(_exerciseLogId);
+			_exerciseLogRepositoryMock.Verify(r => r.GetByIdAsync(_exerciseLogId), Times.Once);
+			_mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(exerciseLog), Times.Once);
+		}
 
-            _exerciseLogRepositoryMock.Verify(r => r.GetByIdAsync(_exerciseLogId), Times.Once);
-            _exerciseLogRepositoryMock.Verify(r => r.UpdateAsync(exerciseLog), Times.Once);
-            _mapperMock.Verify(m => m.Map(updateExerciseLogDto, exerciseLog), Times.Once);
-            _mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(exerciseLog), Times.Once);
-        }
+		[Fact]
+		public async Task GetExerciseLogByIdAsync_WhenNotFound_ShouldThrowNotFound()
+		{
+			// Arrange
+			_exerciseLogRepositoryMock
+				.Setup(r => r.GetByIdAsync(_exerciseLogId))
+				.ReturnsAsync((ExerciseLog?)null);
 
-        [Fact]
-        public async Task UpdateExerciseLogAsync_WhenNotFound_ShouldThrowNotFound()
-        {
-            // Arrange
-            UpdateExerciseLogDto updateExerciseLogDto = new() { Order = 2 };
+			ExerciseLogService exerciseLogService = ExerciseLogService();
 
-            _exerciseLogRepositoryMock
-                .Setup(r => r.GetByIdAsync(_exerciseLogId))
-                .ReturnsAsync((ExerciseLog?)null);
+			// Act
+			Func<Task> act = async () => await exerciseLogService.GetExerciseLogByIdAsync(_exerciseLogId);
 
-            ExerciseLogService exerciseLogService = ExerciseLogService();
+			// Assert
+			await act.Should().ThrowAsync<NotFoundException>()
+				.WithMessage($"{nameof(ExerciseLog)}: {_exerciseLogId} is not found.");
 
-            // Act
-            Func<Task> act = async () => await exerciseLogService.UpdateExerciseLogAsync(_exerciseLogId, updateExerciseLogDto);
+			_mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()), Times.Never);
+		}
 
-            // Assert
-            await act.Should().ThrowAsync<NotFoundException>()
-                .WithMessage($"{nameof(ExerciseLog)}: {_exerciseLogId} is not found.");
+		[Fact]
+		public async Task GetAllExerciseLogsAsync_WhenCalled_ShouldReturnList()
+		{
+			// Arrange
+			List<ExerciseLog> exerciseLogs = [];
+			List<ExerciseLogLightDto> response = [];
 
-            _exerciseLogRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ExerciseLog>()), Times.Never);
-        }
+			_exerciseLogRepositoryMock
+				.Setup(r => r.GetAllListAsync())
+				.ReturnsAsync(exerciseLogs);
 
-        [Fact]
-        public async Task GetExerciseLogByIdAsync_WhenFound_ShouldReturnDto()
-        {
-            // Arrange
-            ExerciseLog exerciseLog = new() { Id = _exerciseLogId };
-            ExerciseLogLightDto exerciseLogLightDto = new() { Id = _exerciseLogId };
+			_mapperMock
+				.Setup(m => m.Map<List<ExerciseLogLightDto>>(exerciseLogs))
+				.Returns(response);
 
-            _exerciseLogRepositoryMock
-                .Setup(r => r.GetByIdAsync(_exerciseLogId))
-                .ReturnsAsync(exerciseLog);
+			ExerciseLogService exerciseLogService = ExerciseLogService();
 
-            _mapperMock
-                .Setup(m => m.Map<ExerciseLogLightDto>(exerciseLog))
-                .Returns(exerciseLogLightDto);
+			// Act
+			List<ExerciseLogLightDto> result = await exerciseLogService.GetAllExerciseLogsAsync();
 
-            ExerciseLogService exerciseLogService = ExerciseLogService();
+			// Assert
+			result.Should().NotBeNull();
+			result.Should().BeSameAs(response);
 
-            // Act
-            ExerciseLogLightDto result = await exerciseLogService.GetExerciseLogByIdAsync(_exerciseLogId);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be(_exerciseLogId);
-
-            _exerciseLogRepositoryMock.Verify(r => r.GetByIdAsync(_exerciseLogId), Times.Once);
-            _mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(exerciseLog), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetExerciseLogByIdAsync_WhenNotFound_ShouldThrowNotFound()
-        {
-            // Arrange
-            _exerciseLogRepositoryMock
-                .Setup(r => r.GetByIdAsync(_exerciseLogId))
-                .ReturnsAsync((ExerciseLog?)null);
-
-            ExerciseLogService exerciseLogService = ExerciseLogService();
-
-            // Act
-            Func<Task> act = async () => await exerciseLogService.GetExerciseLogByIdAsync(_exerciseLogId);
-
-            // Assert
-            await act.Should().ThrowAsync<NotFoundException>()
-                .WithMessage($"{nameof(ExerciseLog)}: {_exerciseLogId} is not found.");
-
-            _mapperMock.Verify(m => m.Map<ExerciseLogLightDto>(It.IsAny<ExerciseLog>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task GetAllExerciseLogsAsync_WhenCalled_ShouldReturnList()
-        {
-            // Arrange
-            List<ExerciseLog> exerciseLogs = [];
-            List<ExerciseLogLightDto> response = [];
-
-            _exerciseLogRepositoryMock
-                .Setup(r => r.GetAllListAsync())
-                .ReturnsAsync(exerciseLogs);
-
-            _mapperMock
-                .Setup(m => m.Map<List<ExerciseLogLightDto>>(exerciseLogs))
-                .Returns(response);
-
-            ExerciseLogService exerciseLogService = ExerciseLogService();
-
-            // Act
-            List<ExerciseLogLightDto> result = await exerciseLogService.GetAllExerciseLogsAsync();
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeSameAs(response);
-
-            _exerciseLogRepositoryMock.Verify(r => r.GetAllListAsync(), Times.Once);
-            _mapperMock.Verify(m => m.Map<List<ExerciseLogLightDto>>(exerciseLogs), Times.Once);
-        }
-    }
+			_exerciseLogRepositoryMock.Verify(r => r.GetAllListAsync(), Times.Once);
+			_mapperMock.Verify(m => m.Map<List<ExerciseLogLightDto>>(exerciseLogs), Times.Once);
+		}
+	}
 }

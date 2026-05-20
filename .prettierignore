@@ -1,0 +1,12 @@
+# Documentation
+*.md
+CLAUDE.md
+
+# C# project
+packages/
+server/
+
+# Dependencies
+node_modules/
+.expo/
+dist/

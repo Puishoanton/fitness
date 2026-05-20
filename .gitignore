@@ -43,6 +43,13 @@ node_modules/
 .expo/
 .env
 .env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp
+.pnp.js
 
 # Migrations temp
 Migrations/obj/
+
+settings.local.json

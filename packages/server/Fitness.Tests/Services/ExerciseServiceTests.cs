@@ -240,7 +240,7 @@ namespace Fitness.Tests.Services
             Mock<IMapper> mapperMock = new();
 
             exerciseRepositoryMock
-                .Setup(r => r.GetAllAsync())
+                .Setup(r => r.GetAllWithMuscleGroupAsync(null))
                 .ReturnsAsync(exercises);
             mapperMock
                 .Setup(m => m.Map<ICollection<ExerciseLightDto>>(It.IsAny<ICollection<Exercise>>()))
@@ -252,12 +252,12 @@ namespace Fitness.Tests.Services
                 );
 
             //Act
-            ICollection<ExerciseLightDto> result = await exerciseService.GetAllExercisesAsync();
+            ICollection<ExerciseLightDto> result = await exerciseService.GetAllExercisesAsync(null);
 
             //Assert
             result.Should().NotBeNull();
 
-            exerciseRepositoryMock.Verify(r => r.GetAllAsync(), Times.Once);
+            exerciseRepositoryMock.Verify(r => r.GetAllWithMuscleGroupAsync(null), Times.Once);
             mapperMock.Verify(m => m.Map<ICollection<ExerciseLightDto>>(It.IsAny<ICollection<Exercise>>()), Times.Once);
         }
 
